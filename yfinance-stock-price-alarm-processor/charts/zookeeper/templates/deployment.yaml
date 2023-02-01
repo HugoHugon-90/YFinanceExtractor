@@ -1,0 +1,29 @@
+{{- if .Values.global.service.zookeeper.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.global.service.zookeeper.name }}-deployment
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: {{ .Values.global.service.zookeeper.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.global.service.zookeeper.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.service.zookeeper.name }}
+    spec:
+      containers:
+      - name: {{ .Values.global.service.zookeeper.name }}
+        image: {{ .Values.global.service.zookeeper.image }}
+        env:
+        - name: ZOOKEEPER_CLIENT_PORT
+          value: "{{ .Values.global.service.zookeeper.port }}"
+        - name: ZOOKEEPER_TICK_TIME
+          value: "2000"
+        ports:
+        - containerPort: {{ .Values.global.service.zookeeper.port }}
+{{- end }}

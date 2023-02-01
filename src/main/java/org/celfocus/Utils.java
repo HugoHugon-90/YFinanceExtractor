@@ -5,24 +5,45 @@ import java.util.Properties;
 
 public class Utils {
 
-    public double[] propertiesReader() {
+    double fiveMinWindowTolerance;
+    double tenMinWindowTolerance;
+    double fifteenMinWindowTolerance;
+    String brokerName;
+    String brokerPort;
+
+    public double getFiveMinWindowTolerance() {
+        return fiveMinWindowTolerance;
+    }
+    public double getTenMinWindowTolerance() {
+        return tenMinWindowTolerance;
+    }
+    public double getFifteenMinWindowTolerance() {
+        return fifteenMinWindowTolerance;
+    }
+    public String getBrokerName() {
+        return brokerName;
+    }
+
+    public String getBrokerPort() {
+        return brokerPort;
+    }
+
+    public void propertiesReader() {
 
         Properties properties = new Properties();
         java.net.URL url = ClassLoader
-                .getSystemResource("tolerances.properties");
+                .getSystemResource("yfinance.properties");
 
         try {
             properties.load(url.openStream());
-        } catch (FileNotFoundException fie) {
+        } catch (IOException fie) {
             fie.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
-        double fiveMinWindowTolerance = Double.parseDouble(properties.getProperty("5minWindowTolerance"));
-        double tenMinWindowTolerance = Double.parseDouble(properties.getProperty("10minWindowTolerance"));
-        double fifteenMinWindowTolerance = Double.parseDouble(properties.getProperty("15minWindowTolerance"));
-
-        return new double[]{fiveMinWindowTolerance, tenMinWindowTolerance, fifteenMinWindowTolerance};
+        this.fiveMinWindowTolerance = Double.parseDouble(properties.getProperty("5minWindowTolerance"));
+        this.tenMinWindowTolerance = Double.parseDouble(properties.getProperty("10minWindowTolerance"));
+        this.fifteenMinWindowTolerance = Double.parseDouble(properties.getProperty("15minWindowTolerance"));
+        this.brokerName = properties.getProperty("kafkaBrokerName");
+        this.brokerPort = properties.getProperty("kafkaBrokerPort");
     }
 }

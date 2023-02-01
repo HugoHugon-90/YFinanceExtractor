@@ -1,0 +1,41 @@
+{{- if .Values.global.service.application.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.global.service.application.name }}-deployment
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: {{ .Values.global.service.application.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.global.service.application.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.service.application.name }}
+    spec:
+      initContainers:
+        {{- if .Values.global.service.broker.enabled }}
+        - name: check-broker-service
+          image: busybox:latest
+          command: [ 'sh', '-c', 'until nc -vz -w 2 {{ .Values.global.service.broker.name }}-service {{ .Values.global.service.broker.port }}; do echo "Waiting for broker service"; sleep 2; done;' ]
+        {{- end}}
+        {{- if .Values.global.service.application.createKafkaTopics }}
+        - name: create-topics
+          image: {{ .Values.global.service.broker.image }}
+          env:
+          {{- range $index, $topic := .Values.global.service.application.createKafkaTopics }}
+            - name: TOPIC{{ $index }}
+              value: {{ $topic }}
+          {{- end }}
+          command: [ 'bash', '-c', 'for (( i=0; i<{{ len .Values.global.service.application.createKafkaTopics }}; i++ )); do TOPIC_VAR_NAME=TOPIC${i}; kafka-topics --bootstrap-server {{ .Values.global.service.broker.name }}-service:{{ .Values.global.service.broker.port }} --partitions {{ .Values.global.service.application.partitions }} --replication-factor {{ .Values.global.service.application.replicationFactor }} --if-not-exists --create --topic ${!TOPIC_VAR_NAME}; done' ]
+        {{- end }}
+      containers:
+        - name: {{ .Values.global.service.application.name }}
+          imagePullPolicy: {{ .Values.global.docker.pullPolicy }}
+          image: {{ .Values.global.service.application.image }}
+          ports:
+            - containerPort: {{ .Values.global.service.application.port }}
+{{- end }}

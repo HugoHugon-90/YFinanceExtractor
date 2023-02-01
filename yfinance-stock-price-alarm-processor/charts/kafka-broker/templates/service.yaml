@@ -1,0 +1,14 @@
+{{- if .Values.global.service.broker.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.global.service.broker.name }}-service
+  namespace: {{ .Values.global.namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.global.service.broker.name }}
+  ports:
+    - port: {{ .Values.global.service.broker.port }}
+      targetPort: {{ .Values.global.service.broker.port }}
+{{- end }}

@@ -1,0 +1,30 @@
+{{- if .Values.global.service.extractor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.global.service.extractor.name }}-deployment
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: {{ .Values.global.service.extractor.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.global.service.extractor.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.service.extractor.name }}
+    spec:
+      initContainers:
+        - name: check-application-service
+          image: busybox:latest
+          command: [ 'sh', '-c',
+                     'until nc -vz -w 2 {{ .Values.global.service.broker.name }}-service {{ .Values.global.service.broker.port }}; do echo "Waiting for broker service"; sleep 2; done;' ]
+      containers:
+        - name: {{ .Values.global.service.extractor.name }}
+          imagePullPolicy: {{ .Values.global.docker.pullPolicy }}
+          image: {{ .Values.global.service.extractor.image }}
+          ports:
+            - containerPort: {{ .Values.global.service.extractor.port }}
+{{- end }}

@@ -1,0 +1,61 @@
+{{- if .Values.global.service.broker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.global.service.broker.name }}-deployment
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: {{ .Values.global.service.broker.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.global.service.broker.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.service.broker.name }}
+    spec:
+      setHostnameAsFQDN: true
+      hostname: "{{ .Values.global.service.broker.name }}-service"
+      initContainers:
+        - name: check-zookeeper-service
+          image: busybox:latest
+          command: [ 'sh', '-c',
+                     'until nc -vz -w 2 {{ .Values.global.service.zookeeper.name }}-service 2181; do echo "Waiting for zookeeper service"; sleep 2; done;' ]
+      containers:
+        - name: {{ .Values.global.service.broker.name }}
+          imagePullPolicy: {{ .Values.global.docker.pullPolicy }}
+          image: {{ .Values.global.service.broker.image }}
+          env:
+          - name: KAFKA_BROKER_ID
+            value: "1"
+         # - name: KAFKA_BROKER_RACK- #dont use locally
+          #  value: "rack-a"
+          - name: KAFKA_ZOOKEEPER_CONNECT
+            value: "{{ .Values.global.service.zookeeper.name }}-service:2181"
+          - name: KAFKA_ADVERTISED_HOST_NAME
+            value: "{{ .Values.global.service.broker.name }}-service"
+          - name: KAFKA_ADVERTISED_LISTENERS
+            value: "PLAINTEXT://$(KAFKA_ADVERTISED_HOST_NAME):9092"
+          - name: KAFKA_DELETE_TOPIC_ENABLE
+            value: "true"
+          - name: KAFKA_JMX_PORT
+            value: "9999"
+          - name: KAFKA_JMX_HOSTNAME
+            value: "{{ .Values.global.service.broker.name }}-service"
+          - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+            value: "1"
+          - name: CONFLUENT_METRICS_ENABLE
+            value: "false"
+          - name: CONFLUENT_SUPPORT_CUSTOMER_ID
+            value: "anonymous"
+          - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+            value: "1"
+          - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+            value: "1"
+          - name: KAFKA_MIN_INSYNC_REPLICAS
+            value: "1"
+          ports:
+          - containerPort: {{ .Values.global.service.broker.port }}
+{{- end }}

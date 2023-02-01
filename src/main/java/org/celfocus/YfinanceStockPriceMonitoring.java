@@ -3,7 +3,6 @@ package org.celfocus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import javafx.util.Pair;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -23,8 +22,7 @@ public class YfinanceStockPriceMonitoring{
     private static final Logger log = LoggerFactory.getLogger(YfinanceStockPriceMonitoring.class.getSimpleName());
 
     // app configs
-    private static final String bootstrapServers = "localhost:9092";
-    private static final String groupId  = "yfinance-stock-price-monitoring-application";
+    private static final String groupId  = "yfinance-stock-value-monitoring-application";
 
     // topics
     public static final String inputTopic = "yfinance-raw-input";
@@ -45,16 +43,17 @@ public class YfinanceStockPriceMonitoring{
     private static final String stockPriceCounterField = "stockpricecounter";
 
 
+
     public Topology createYfinanceTopology(){
 
-        //Read tolerances from properties file
+        //Read tolerances and broker from properties file
         Utils utils = new Utils();
-        double[] tolerances = utils.propertiesReader();
+        utils.propertiesReader();
 
         // set windowing configs
-        Pair<Integer, Double> fiveMinWindowAndTolerance = new Pair<>(5, tolerances[0]);
-        Pair<Integer, Double> tenMinWindowAndTolerance = new Pair<>(10, tolerances[1]);
-        Pair<Integer, Double> fifteenMinWindowAndTolerance = new Pair<>(15, tolerances[2]);
+        KeyValue<Integer, Double> fiveMinWindowAndTolerance = new KeyValue<>(5, utils.getFiveMinWindowTolerance());
+        KeyValue<Integer, Double> tenMinWindowAndTolerance = new KeyValue<>(10, utils.getTenMinWindowTolerance());
+        KeyValue<Integer, Double> fifteenMinWindowAndTolerance = new KeyValue<>(15, utils.getFifteenMinWindowTolerance());
 
         // kafka-streams builder
         StreamsBuilder builder = new StreamsBuilder();
@@ -99,11 +98,11 @@ public class YfinanceStockPriceMonitoring{
         // aggregates data in 5, 10 and 15 mins windows, computing the average stock price value
         // for each entity given by the producer
         KStream<String, JsonNode> yfinanceTimeAggregatedFiveMin =
-                timeAggregatedStream(yfinanceAfterDedup, fiveMinWindowAndTolerance.getKey(), jsonSerde);
+                timeAggregatedStream(yfinanceAfterDedup, fiveMinWindowAndTolerance.key, jsonSerde);
         KStream<String, JsonNode> yfinanceTimeAggregatedTenMin =
-                timeAggregatedStream(yfinanceAfterDedup, tenMinWindowAndTolerance.getKey(), jsonSerde);
+                timeAggregatedStream(yfinanceAfterDedup, tenMinWindowAndTolerance.key, jsonSerde);
         KStream<String, JsonNode> yfinanceTimeAggregatedFifteenMin =
-                timeAggregatedStream(yfinanceAfterDedup, fifteenMinWindowAndTolerance.getKey(), jsonSerde);
+                timeAggregatedStream(yfinanceAfterDedup, fifteenMinWindowAndTolerance.key, jsonSerde);
 
 
         // global table that stores the value of last average (not calculated with current event)
@@ -137,6 +136,13 @@ public class YfinanceStockPriceMonitoring{
     }
     public static void main(String[] args) {
 
+        //Read tolerances and broker from properties file
+        Utils utils = new Utils();
+        utils.propertiesReader();
+
+        //set host
+        String bootstrapServers = utils.getBrokerName() + ":" + utils.getBrokerPort();
+
         //consumer properties
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -154,7 +160,7 @@ public class YfinanceStockPriceMonitoring{
         YfinanceStockPriceMonitoring yfinanceStockPriceMonitoring = new YfinanceStockPriceMonitoring();
         KafkaStreams streams = new KafkaStreams(yfinanceStockPriceMonitoring.createYfinanceTopology(), properties);
 
-        //streams.cleanUp(); // only do this in dev - not in prod
+        streams.cleanUp(); // only do this in dev - not in prod
         streams.start();
 
         // print the topology
@@ -197,7 +203,7 @@ public class YfinanceStockPriceMonitoring{
     private static KStream<String, JsonNode> alarmTriggerStream(
               KStream<String, JsonNode> yfinanceAggregatedStream,
               GlobalKTable<String, JsonNode> yfinanceLastAverageStorageTable,
-              Pair<Integer,Double> windowTimeAndTolerance )
+              KeyValue<Integer,Double> windowTimeAndTolerance )
     {
 
         return yfinanceAggregatedStream
@@ -208,7 +214,7 @@ public class YfinanceStockPriceMonitoring{
                 .filter(
                         (key,value) ->
                                 (
-                                    value.get("deviation").asDouble() >= windowTimeAndTolerance.getValue()
+                                    value.get("deviation").asDouble() >= windowTimeAndTolerance.value
                                 )
                 );
     }

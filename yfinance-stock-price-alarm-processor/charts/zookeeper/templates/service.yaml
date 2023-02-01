@@ -1,0 +1,14 @@
+{{- if .Values.global.service.zookeeper.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.global.service.zookeeper.name }}-service
+  namespace: {{ .Values.global.namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.global.service.zookeeper.name }}
+  ports:
+    - port: {{ .Values.global.service.zookeeper.port }}
+      targetPort: {{ .Values.global.service.zookeeper.port }}
+  {{- end }}

@@ -1,0 +1,3 @@
+yfinance~=0.2.9
+numpy~=1.24.1
+kafka-python~=2.0.2
