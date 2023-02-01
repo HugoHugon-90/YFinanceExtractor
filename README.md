@@ -1,4 +1,4 @@
-# Yfinance Stock Price Alarm Processor
+# YFinance Stock Price Alarm Processor
 In this code we use YFinance API to extract, in real time, the current stock price of a list of entities,
 (as of now: meta, ibm, amazon, apple, general motors and vanguard_etf), continuously 
 processing their current-price moving average for 5, 10 and 15 minute windows. 
