@@ -83,7 +83,7 @@ public class YfinanceStockPriceMonitoring{
                 builder.globalTable(afterDedupStorageTableTopic, yFinanceConsumed);
 
         // de-duplicate data
-        KStream<String, JsonNode> yfinanceDedupStream = filterDuplicates(yfinanceRawStream,globalTableStorageForDedup);
+        KStream<String, JsonNode> yfinanceDedupStream = filterDuplicates(yfinanceRawStream, globalTableStorageForDedup);
 
         // populate topics for global table (state-storage) and for stream (continue topology logic)
         yfinanceDedupStream.to(afterDedupStorageTableTopic, yFinanceProduced);
@@ -98,11 +98,11 @@ public class YfinanceStockPriceMonitoring{
         // aggregates data in 5, 10 and 15 mins windows, computing the average stock price value
         // for each entity given by the producer
         KStream<String, JsonNode> yfinanceTimeAggregatedFiveMin =
-                timeAggregatedStream(yfinanceAfterDedup, fiveMinWindowAndTolerance.key, jsonSerde);
+                timeAggregatedAverageStream(yfinanceAfterDedup, fiveMinWindowAndTolerance.key, jsonSerde);
         KStream<String, JsonNode> yfinanceTimeAggregatedTenMin =
-                timeAggregatedStream(yfinanceAfterDedup, tenMinWindowAndTolerance.key, jsonSerde);
+                timeAggregatedAverageStream(yfinanceAfterDedup, tenMinWindowAndTolerance.key, jsonSerde);
         KStream<String, JsonNode> yfinanceTimeAggregatedFifteenMin =
-                timeAggregatedStream(yfinanceAfterDedup, fifteenMinWindowAndTolerance.key, jsonSerde);
+                timeAggregatedAverageStream(yfinanceAfterDedup, fifteenMinWindowAndTolerance.key, jsonSerde);
 
 
         // global table that stores the value of last average (not calculated with current event)
@@ -219,8 +219,8 @@ public class YfinanceStockPriceMonitoring{
                 );
     }
 
-    private static KStream<String, JsonNode> timeAggregatedStream(KStream<String, JsonNode> yfinanceAfterDedup,
-                                                                  int windowTime, Serde<JsonNode> jsonSerde ){
+    private static KStream<String, JsonNode> timeAggregatedAverageStream(KStream<String, JsonNode> yfinanceAfterDedup,
+                                                                         int windowTime, Serde<JsonNode> jsonSerde ){
         // initializer
         ObjectNode yfinanceAccumulatorJson = JsonNodeFactory.instance.objectNode();
         yfinanceAccumulatorJson.put(stockPriceCounterField,0);
