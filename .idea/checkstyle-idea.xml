@@ -5,11 +5,14 @@
     <scanScope>JavaOnly</scanScope>
     <copyLibs>true</copyLibs>
     <option name="thirdPartyClasspath" />
-    <option name="activeLocationIds" />
+    <option name="activeLocationIds">
+      <option value="88d6e5b0-5e6b-40c3-8e38-df3f2bde5eef" />
+    </option>
     <option name="locations">
       <list>
         <ConfigurationLocation id="bundled-sun-checks" type="BUNDLED" scope="All" description="Sun Checks">(bundled)</ConfigurationLocation>
         <ConfigurationLocation id="bundled-google-checks" type="BUNDLED" scope="All" description="Google Checks">(bundled)</ConfigurationLocation>
+        <ConfigurationLocation id="88d6e5b0-5e6b-40c3-8e38-df3f2bde5eef" type="LOCAL_FILE" scope="All" description="IoT-NGM-CheckStyle">$PROJECT_DIR$/../../GeneralFiles/checkStyle.xml</ConfigurationLocation>
       </list>
     </option>
   </component>

@@ -8,7 +8,7 @@ from kafka import KafkaProducer
 producer = KafkaProducer(bootstrap_servers='server-k8s-service:9092', client_id="stock_price_python_producer")
 output_topic = "yfinance-raw-input"
 
-
+sleep_time = 10 # seconds
 def get_latest_stock_prices_random_generator(date_counter=0, verbose=False):
 
     list_entities = ["meta", "ibm", "amazon", "apple", "general_motors"]
@@ -68,4 +68,4 @@ def get_latest_stock_prices(verbose=False):
 
 while True:
     get_latest_stock_prices(verbose=False)
-    time.sleep(2)
+    time.sleep(sleep_time)

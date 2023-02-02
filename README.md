@@ -63,8 +63,7 @@ so that the kubernetes deployment can recognize and find the app docker image:
 commands will do the same as above but for the python extractor:
   
       eval $(minikube docker-env)
-      docker build -t yfinance-stock-price-alarm-processor-001 .
-
+      docker build -t yfinance-extractor-001 .
 - In project root, to start the kubernetes deployment with the helm command:
 
       helm install --debug yfinance-stock-price-alarm-processor yfinance-stock-price-alarm-processor --values=yfinance-stock-price-alarm-processor/values.yaml          

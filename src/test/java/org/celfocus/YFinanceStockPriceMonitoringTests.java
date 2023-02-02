@@ -1,6 +1,5 @@
 package org.celfocus;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,7 +15,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -79,7 +77,7 @@ public class YFinanceStockPriceMonitoringTests {
         props.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "testgroupId");
         props.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.setProperty(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG,
-                YfinanceStockPriceMonitoring.myExtractor.class.getName());
+                MyExtractor.class.getName());
         props.setProperty(ProducerConfig.ACKS_CONFIG, "all");
 
         // Fetch Topology!
