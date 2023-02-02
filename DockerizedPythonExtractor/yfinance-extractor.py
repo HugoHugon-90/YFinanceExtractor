@@ -50,10 +50,11 @@ def get_latest_stock_prices(verbose=False):
             stock_price = stats_dict["price"]["regularMarketPrice"]
             stock_date = stats_dict["price"]["regularMarketTime"]
 
-            output_dict = {"entityname": entity_dict["entity_name"],
+            output_dict = {
+                           "entityname": entity_dict["entity_name"],
                            "currentstockprice": stock_price,
-                           "lastupdatedate": stock_date,
-                           "key": entity_dict["entity_name"]}
+                           "lastupdatedate": stock_date
+                           }
 
             output_json = json.dumps(output_dict, indent=4)
             if verbose:
