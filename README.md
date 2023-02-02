@@ -95,7 +95,7 @@ You should see the data being consumed by the above-mentioned topics
 in real-time. Take in consideration that some input data may not be consumed by some 
 topics due to the input tolerances given, or due to duplication filtering.
 
-## 3 - Installing instructions
+## 5 - Installing instructions
 
 If you want to change the source code, in the root folder, run:
 
