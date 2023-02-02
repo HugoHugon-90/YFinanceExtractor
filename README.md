@@ -18,9 +18,9 @@ Technologies:
 - Environment is local and self-contained, deployed and managed using kubernetes in a minikube cluster and docker images.
 
 
-## 1 -  Topology and functional architecture
+## 1 -  Topology and  architecture
 - Functional/topology diagram:
-![Architecture Diagram for YFinance Processor](/BdeOnboardingExercise-RealSolution.png "Architecture Diagram")
+![Functional Diagram for YFinance Processor](/BdeOnboardingExercise-RealSolution.png "Functional/topology Diagram")
 - Functional steps:
   - YFinance current stock price and its last update date are fetched using YFinance API 
   and a Python extractor. Data is fetched for several entities once each minute into a Kafka topic, which 
@@ -34,6 +34,32 @@ Technologies:
   - Steps a. and c. are stateful operations, and therefore a GlobalKTable is used to store the state of the exact-previous
 event, needed for the deduplication and deviation calculus, respectively.
   - Output topics are the averages and the alarm outputs. All other topics are internal.
+
+  
+- Architecture diagram:
+![Functional Diagram for YFinance Processor](/BdeOnboardingExercise-Real Architecture Solution.png "Architecture Diagram")
+
+- Architecture steps:
+  - Have docker, minikube, kubectl, helm installed in your local env.
+  - Construct Helm charts, located in: < root >/yfinance-stock-price-alarm-processor
+  - Declare global values in < root >/yfinance-stock-price-alarm-processor/values.yaml, 
+useful for each deployment:
+    - input topics to be created, partition number and replication factor;
+    - image name inside minikube-docker env to be fetched by the service;
+    - port for each service.
+  - Define the deployment and service specs inside each template folder:
+    - init containers
+    - container (name, image, image pull policy, etc.)
+    - number of replicas
+    - IP-type
+    - exposed-ports
+    - etc.
+  - Set the pre-requirements for each deployment. You may find examples, for instance, in
+    < root >/yfinance-stock-price-alarm-processor/charts/application/templates/deployment.yaml,
+  where init containers to wait for the kafka broker service, and then for the mandatory creation 
+  of the input kafka-topics, are executed before the Application is actually deployed. The order
+  of deployment is functionally achieved this way, and depicted for this case in the figure above.
+  - Deployment starts with a simple helm command (see below), with minikube container up and started in docker.
 
 ## 2 - Pre-requirements
 The following pre-requirements are needed to configure and execute the integration tests:
