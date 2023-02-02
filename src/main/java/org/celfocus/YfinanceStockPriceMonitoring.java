@@ -74,7 +74,7 @@ public class YfinanceStockPriceMonitoring {
 
 
   /**
-   * Main method,where Consumer/Producer/Streams Configs are setup,
+   * Main method,where Consumer/Producer/Streams Configs are set up,
    * Kafka-Streams is initialized and built with the above topology,
    * Streams App is started, and a proper shutdown is offered.
    *
@@ -83,11 +83,11 @@ public class YfinanceStockPriceMonitoring {
   public static void main(String[] args) {
 
     //Read tolerances and broker from properties file
-    Utils utils = new Utils();
-    utils.propertiesReader();
+    PropertiesReader yfinanceProperties = new PropertiesReader();
 
     //set host
-    String bootstrapServers = utils.getBrokerName() + ":" + utils.getBrokerPort();
+    String bootstrapServers = yfinanceProperties.getBrokerName() + ":"
+        + yfinanceProperties.getBrokerPort();
 
     //consumer properties
     Properties properties = new Properties();
@@ -357,16 +357,15 @@ public class YfinanceStockPriceMonitoring {
   public Topology createYfinanceTopology() {
 
     //Read tolerances and broker from properties file
-    Utils utils = new Utils();
-    utils.propertiesReader();
+    PropertiesReader yfinanceProperties = new PropertiesReader();
 
     // set windowing configs
     KeyValue<Integer, Double> fiveMinWindowAndTolerance =
-        new KeyValue<>(5, utils.getFiveMinWindowTolerance());
+        new KeyValue<>(5, yfinanceProperties.getFiveMinWindowTolerance());
     KeyValue<Integer, Double> tenMinWindowAndTolerance =
-        new KeyValue<>(10, utils.getTenMinWindowTolerance());
+        new KeyValue<>(10, yfinanceProperties.getTenMinWindowTolerance());
     KeyValue<Integer, Double> fifteenMinWindowAndTolerance =
-        new KeyValue<>(15, utils.getFifteenMinWindowTolerance());
+        new KeyValue<>(15, yfinanceProperties.getFifteenMinWindowTolerance());
 
     // kafka-streams builder
     StreamsBuilder builder = new StreamsBuilder();

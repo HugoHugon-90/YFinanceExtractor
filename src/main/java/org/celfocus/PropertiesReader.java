@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * A class that contains utility functions.
+ * A class used to read .properties file.
  */
-public class Utils {
+public class PropertiesReader {
 
   double fiveMinWindowTolerance;
   double tenMinWindowTolerance;
@@ -56,7 +56,8 @@ public class Utils {
 
 
   /**
-   * Reads yfinance.properties file and acts as a setter for
+   * Constructor.
+   * Reads yfinance.properties file and acts as a setter for:
    *   double fiveMinWindowTolerance;
    *   double tenMinWindowTolerance;
    *   double fifteenMinWindowTolerance;
@@ -64,7 +65,7 @@ public class Utils {
    *   String brokerPort;
    * based on these properties.
    */
-  public void propertiesReader() {
+  public PropertiesReader() {
 
     Properties properties = new Properties();
     java.net.URL url = ClassLoader
