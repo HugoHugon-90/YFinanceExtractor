@@ -9,3 +9,4 @@
 # Zeppelin ignored files
 /ZeppelinRemoteNotebooks/
 /target
+/*.iml
