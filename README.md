@@ -133,3 +133,13 @@ run:
       mv -i ./target/BdeOnBoardingExerciseFirstDraft-1.0-SNAPSHOT-jar-with-dependencies.jar ./DockerizedApp/yfinance-stock-price-alarm-processor-001.jar
 
 and follow the running instructions **3** to run the new code.
+
+## TODO and possible applications
+Connect the output-averages from yfinance-averages-output to a board to see real-time evolution
+of the stock-price :) .
+
+connect the alarm messages from yfinance-deviation-alarm to an event-triggered service, which invents or uninvests
+on a particular entity :) .
+
+Scaling and fault-tolerance at K8s, Kafka and Kafka-Streams level should be further studied.
+
