@@ -2,6 +2,7 @@
 
 _(Disclaimer note:
 This project was done within the onboarding and learning scope of the IoT-NGM BDE Team of Celfocus, as a challenge.
+Although the code is all mine, the original idea came from Fábio Pereira.
 )_
 
 
