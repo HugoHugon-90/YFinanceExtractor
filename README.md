@@ -22,7 +22,7 @@ Technologies:
 - Extractor is done with python3.
 - Data is stored using Kafka.
 - ETL is performed using Kafka Streams.
-- Environment is local and self-contained, deployed and managed using kubernetes in a minikube cluster and docker images.
+- Environment is local and self-contained, deployed and managed using Helm and kubernetes in a minikube cluster and docker images.
 
 
 ## 1 -  Topology and  architecture
