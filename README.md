@@ -1,7 +1,7 @@
 # YFinance Stock Price Alarm Processor
 
 _(Disclaimer note:
-This project was done within the onboarding and learning scope of the IoT-NGM BDE Team, as a challenge.
+This project was done within the onboarding and learning scope of the IoT-NGM BDE Team of Celfocus, as a challenge.
 )_
 
 
