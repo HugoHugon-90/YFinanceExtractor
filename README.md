@@ -44,7 +44,7 @@ event, needed for the deduplication and deviation calculus, respectively.
 
   
 - Architecture diagram:
-![Functional Diagram for YFinance Processor](/BdeOnboardingExercise-Real Architecture Solution.png "Architecture Diagram")
+![Functional Diagram for YFinance Processor](/BdeOnboardingExercise-RealArchitectureSolution.png "Architecture Diagram")
 
 - Architecture steps:
   - Have docker, minikube, kubectl, helm installed in your local env.
