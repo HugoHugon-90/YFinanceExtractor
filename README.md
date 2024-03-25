@@ -145,7 +145,7 @@ and follow the running instructions **3** to run the new code.
 Connect the output-averages from yfinance-averages-output to a board to see real-time evolution
 of the stock-price :) .
 
-connect the alarm messages from yfinance-deviation-alarm to an event-triggered service, which invents or uninvests
+connect the alarm messages from yfinance-deviation-alarm to an event-triggered service, which invests or uninvests
 on a particular entity :) .
 
 Scaling and fault-tolerance at K8s, Kafka and Kafka-Streams level should be further studied.
