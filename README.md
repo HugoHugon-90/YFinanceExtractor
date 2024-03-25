@@ -1,4 +1,4 @@
-# YFinance Stock Price Alarm Processor
+oi# YFinance Stock Price Alarm Processor
 
 _(Disclaimer note:
 This project was done within the onboarding and learning scope of the IoT-NGM BDE Team of Celfocus, as a challenge.
@@ -44,7 +44,7 @@ event, needed for the deduplication and deviation calculus, respectively.
 
   
 - Architecture diagram:
-![Functional Diagram for YFinance Processor](/BdeOnboardingExercise-RealArchitectureSolution.png "Architecture Diagram")
+![Functional Diagram for YFinance Processor](/BdeOnboardingExercise-Real Architecture Solution.png "Architecture Diagram")
 
 - Architecture steps:
   - Have docker, minikube, kubectl, helm installed in your local env.
